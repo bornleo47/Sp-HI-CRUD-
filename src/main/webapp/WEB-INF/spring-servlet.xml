@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+   
+    <context:component-scan base-package="com.anuk.crud.controllers"></context:component-scan>
+ 
+
+    <bean id="id1" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+        <property name="url" value="jdbc:mysql://localhost:8889/user"></property>
+        <property name="username" value="root"></property>
+        <property name="password" value="root"></property>
+    </bean>
+	
+    <bean id="id2" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="id1"></property>
+        
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <prop key="hibernate.show_sql">true</prop>		
+            </props>
+        </property>
+    
+		
+        <property name="mappingResources">
+            <list>
+                <value>com/anuk/crud/resources/employee.hbm.xml</value>
+            </list>
+        </property>
+	
+    </bean>
+	
+    <bean id="id3" class="org.springframework.orm.hibernate3.HibernateTemplate">
+        <property name="sessionFactory" ref="id2"></property>
+    </bean>
+	
+    <bean id="id4" class="com.anuk.crud.dao.EmployeeDaoImpl">
+        <property name="ht" ref="id3"></property>
+    </bean>
+    
+    <bean id="id5" class="com.anuk.crud.bo.EmployeeBoImpl">
+        
+        <property name="b" ref="id4"></property>
+    </bean>
+		
+
+
+ <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/jsp/"
+          p:suffix=".jsp"/>
+ 
+ 
+ 
+ 
+ <!--
+ <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+                <prop key="index.htm">indexController</prop>
+            </props>
+        </property>
+    </bean>
+
+  
+    <bean name="indexController"
+          class="org.springframework.web.servlet.mvc.ParameterizableViewController"
+          p:viewName="index"/>
+ 
+    -->
+
+
+</beans>
